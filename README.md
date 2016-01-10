@@ -5,7 +5,7 @@ This version builds on the excellent work from Ryan Graciano and others. It adds
 
 * "Alexa, tell Sonos to play music from ARTIST"
 
-And allows you to leave off the ROOM parameter, in which case it should default to the last specified room.
+And allows you to leave off the ROOM parameter for most commands, in which case it will default to the first player found. It looks like there are plans for node-sonos-http-api to add the ability to target the most recently called player, in which this project will be updated to target that recent player.
 
 # Usage
 
