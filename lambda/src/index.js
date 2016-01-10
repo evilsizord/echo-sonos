@@ -1,7 +1,7 @@
 'use strict';
 
 var http = require('http');
-
+var util = require('util');
 var options = require('./options');
 
 var AlexaSkill = require('./AlexaSkill');
@@ -18,13 +18,25 @@ var STATE_RESPONSES = [
 EchoSonos.prototype = Object.create(AlexaSkill.prototype);
 EchoSonos.prototype.constructor = EchoSonos;
 
-
+function HasSlot(intent, slotName)
+{
+    //todo: not sure if empty slot has empty string, or null, or does not exist.. so hence this function
+    if (typeof intent.slots != 'object') return false;
+    if (typeof intent.slots[ slotName ] != 'object') return false;
+    if (intent.slots[ slotName ].value == '' || intent.slots[ slotName ].value == null) return false;
+    return true;
+}
 
 EchoSonos.prototype.intentHandlers = {
     // register custom intent handlers
     PlayIntent: function (intent, session, response) {
         console.log("PlayIntent received");
-        options.path = '/preset/' + encodeURIComponent(intent.slots.Preset.value);
+        if (HasSlot(intent, 'Room')) {
+            options.path = '/play/' + encodeURIComponent(intent.slots.Room.value);
+        }
+        else {
+            options.path = '/play';
+        }
         httpreq(options, function() {
             response.tell("OK");
         });
@@ -32,9 +44,28 @@ EchoSonos.prototype.intentHandlers = {
 
     PlaylistIntent: function (intent, session, response) {
         console.log("PlaylistIntent received");
-        options.path = '/' + encodeURIComponent(intent.slots.Room.value) + '/playlist/' + encodeURIComponent(intent.slots.Preset.value);
+        if (HasSlot(intent, 'Room')) {
+            options.path = '/' + encodeURIComponent(intent.slots.Room.value) + '/playlist/' + encodeURIComponent(intent.slots.Preset.value);
+        }
+        else {
+            options.path = '/playlist/' + encodeURIComponent(intent.slots.Preset.value);
+        }
         httpreq(options, function() {
             response.tell("OK");
+        });
+    },
+    
+    PlayArtistIntent: function (intent, session, response) {
+        console.log("PlayArtistIntent received");
+        if (HasSlot(intent, 'Room')) {
+            options.path = '/' + encodeURIComponent(intent.slots.Room.value) + '/artist/' + encodeURIComponent(intent.slots.Artist.value);
+        }
+        else {
+            options.path = '/artist/' + encodeURIComponent(intent.slots.Artist.value);
+        }
+        httpreq(options, function(responseText) {
+            var responseObj = JSON.parse(responseText);
+            response.tell(responseObj.text);
         });
     },
 
@@ -48,7 +79,9 @@ EchoSonos.prototype.intentHandlers = {
 
     ResumeIntent: function (intent, session, response) {
         console.log("ResumeIntent received");
-        options.path = '/resumeall';
+        // avoid pauseall and resumeall because they act independently from pause and resume which is very confusing!!1
+        //options.path = '/resumeall';
+        options.path = '/play';
         httpreq(options, function() {
             response.tell("OK");
         });
@@ -56,7 +89,9 @@ EchoSonos.prototype.intentHandlers = {
 
     PauseIntent: function (intent, session, response) {
         console.log("PauseIntent received");
-        options.path = '/pauseall';
+        // avoid pauseall and resumeall because they act independently from pause and resume which is very confusing!!1
+        //options.path = '/pauseall';
+        options.path = '/pause';
         httpreq(options, function() {
             response.tell("OK");
         });
@@ -165,8 +200,13 @@ function volumeHandler(roomValue, response, volume) {
     var roomAndGroup = parseRoomAndGroup(roomValue);
 
     if (!roomAndGroup.room) {
-        response.tell("Please specify a room. For example, turn the volume down in the KITCHEN");
-        return;
+        //response.tell("Please specify a room. For example, turn the volume down in the KITCHEN");
+        //return;
+        options.path = '/volume/' + volume;
+
+        httpreq(options, function() {
+            response.tell("OK");
+        });
     }
 
     if (!roomAndGroup.group) {
@@ -176,7 +216,6 @@ function volumeHandler(roomValue, response, volume) {
             response.tell("OK");
         });
     }
-
     else {
         actOnCoordinator(options, '/groupVolume/' + volume, roomAndGroup.room,  function (responseBodyJson) {
             response.tell("OK");
@@ -230,18 +269,24 @@ function httpreq(options, responseCallback) {
 // 1) grab /zones and find the coordinator for the room being asked for
 // 2) perform an action on that coordinator 
 function actOnCoordinator(options, actionPath, room, onCompleteFun) {
-    options.path = '/zones';
-    console.log("getting zones...");
+    if (room) {
+        options.path = '/zones';
+        console.log("getting zones...");
 
-    var handleZonesResponse = function (responseJson) {
-        responseJson = JSON.parse(responseJson);
-        var coordinatorRoomName = findCoordinatorForRoom(responseJson, room);
-        options.path = '/' + encodeURIComponent(coordinatorRoomName) + actionPath;
-        console.log(options.path);
-        httpreq(options, onCompleteFun);
+        var callback = function (responseJson) {
+            responseJson = JSON.parse(responseJson);
+            var coordinatorRoomName = findCoordinatorForRoom(responseJson, room);
+            options.path = '/' + encodeURIComponent(coordinatorRoomName) + actionPath;
+            console.log(options.path);
+            httpreq(options, onCompleteFun);
+        }
+    }
+    else {
+        options.path = actionPath;
+        callback = onCompleteFun;
     }
 
-    httpreq(options, handleZonesResponse);
+    httpreq(options, callback);
 }
 
 // Given a room name, returns the name of the coordinator for that room
