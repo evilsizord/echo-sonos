@@ -1,6 +1,14 @@
 # echo-sonos
 All of the pieces for an Amazon Echo (Alexa) <-> Sonos integration.
 
+This version builds on the excellent work from Ryan Graciano and others. It adds the ability to play music from a particular artist:
+
+* "Alexa, tell Sonos to play music from ARTIST"
+
+And allows you to leave off the ROOM parameter, in which case it should default to the last specified room.
+
+*NOTE* These features require an update to node-sonos-http-api, which will be published shortly.
+
 # Usage
 
 Global commands (no rooms required):
