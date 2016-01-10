@@ -1,4 +1,16 @@
-PlayIntent play {Preset}
+PlayIntent play
+PlayIntent play music
+
+PlayArtistIntent play artist {Artist} in {Room}
+PlayArtistIntent play artist {Artist} in the {Room}
+PlayArtistIntent play music from {Artist} in {Room}
+PlayArtistIntent play music from {Artist} in the {Room}
+PlayArtistIntent play music from artist {Artist} in {Room}
+PlayArtistIntent play music from artist {Artist} in the {Room}
+
+PlayArtistIntent play artist {Artist}
+PlayArtistIntent play music from {Artist}
+PlayArtistIntent play music from artist {Artist}
 
 PlaylistIntent playlist {Preset} in {Room}
 PlaylistIntent playlist {Preset} in the {Room}
@@ -6,6 +18,10 @@ PlaylistIntent play playlist {Preset} in {Room}
 PlaylistIntent play playlist {Preset} in the {Room}
 PlaylistIntent start playlist {Preset} in {Room}
 PlaylistIntent start playlist {Preset} in the {Room}
+
+PlaylistIntent playlist {Preset}
+PlaylistIntent play playlist {Preset}
+PlaylistIntent start playlist {Preset}
 
 FavoriteIntent favorite {Preset} in {Room}
 FavoriteIntent favorite {Preset} in the {Room}
@@ -34,6 +50,8 @@ VolumeUpIntent louder in the {Room}
 VolumeUpIntent volume up in {Room}
 VolumeUpIntent volume up in the {Room}
 
+VolumeUpIntent turn it up
+
 VolumeDownIntent turn it down in {Room}
 VolumeDownIntent turn it down in the {Room}
 VolumeDownIntent turn the volume down in {Room}
@@ -44,6 +62,8 @@ VolumeDownIntent quieter in {Room}
 VolumeDownIntent quieter in the {Room}
 VolumeDownIntent volume down in {Room}
 VolumeDownIntent volume down in the {Room}
+
+VolumeDownIntent turn it down
 
 SetVolumeIntent set volume to {Percent} in {Room}
 SetVolumeIntent set volume to {Percent} percent in {Room}
@@ -65,6 +85,11 @@ SetVolumeIntent turn it down to {Percent} in {Room}
 SetVolumeIntent turn it down to {Percent} percent in {Room}
 SetVolumeIntent turn it down to {Percent} in the {Room}
 SetVolumeIntent turn it down to {Percent} percent in the {Room}
+
+SetVolumeIntent set volume to {Percent}
+SetVolumeIntent set volume to {Percent} percent
+SetVolumeIntent change volume to {Percent}
+SetVolumeIntent change volume to {Percent} percent
 
 NextTrackIntent go to next track in {Room}
 NextTrackIntent go to next track in the {Room}
@@ -89,6 +114,14 @@ NextTrackIntent skip song in the {Room}
 NextTrackIntent skip this song in {Room}
 NextTrackIntent skip this song in the {Room}
 
+NextTrackIntent next track
+NextTrackIntent go to next track
+NextTrackIntent next song
+NextTrackIntent go to next song
+NextTrackIntent skip
+NextTrackIntent skip track
+NextTrackIntent skip song
+
 PreviousTrackIntent go to previous track in {Room}
 PreviousTrackIntent go to previous track in the {Room}
 PreviousTrackIntent go to the previous track in {Room}
@@ -108,12 +141,20 @@ PreviousTrackIntent previous track in the {Room}
 PreviousTrackIntent previous song in {Room}
 PreviousTrackIntent previous song in the {Room}
 
+PreviousTrackIntent previous track
+PreviousTrackIntent go to previous track
+PreviousTrackIntent previous song
+PreviousTrackIntent go to previous song
+PreviousTrackIntent go back
+
 ClearQueueIntent clear the queue in {Room}
 ClearQueueIntent clear the queue in the {Room}
 ClearQueueIntent clear queue in {Room}
 ClearQueueIntent clear queue in the {Room}
 ClearQueueIntent clear playlist in {Room}
 ClearQueueIntent clear playlist in the {Room}
+
+ClearQueueIntent clear the queue 
 
 WhatsPlayingIntent what's playing in {Room}
 WhatsPlayingIntent what's playing in the {Room}
@@ -124,6 +165,8 @@ WhatsPlayingIntent what band is this in the {Room}
 WhatsPlayingIntent who's playing in {Room}
 WhatsPlayingIntent who's playing in the {Room}
 WhatsPlayingIntent what am i hearing in the {Room}
+
+WhatsPlayingIntent what's playing
 
 MuteIntent mute in {Room}
 MuteIntent mute in the {Room}

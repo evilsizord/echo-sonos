@@ -9,6 +9,20 @@
             }
         ]
     },
+    
+    {
+      "intent": "PlayArtistIntent",
+      "slots": [
+        {
+            "name": "Artist",
+            "type": "ARTIST"
+        },
+        {
+            "name": "Room",
+            "type": "ROOMS"
+        }
+      ]
+    },
  
     {
       "intent": "PlaylistIntent",
@@ -196,4 +210,3 @@
     }
   ]
 }
-
