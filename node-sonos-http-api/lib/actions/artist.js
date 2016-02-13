@@ -12,11 +12,11 @@ function artist(player, values, callback) {
   
   callback.invokeIntended = true;
   
-  player.browse('A:ALBUMARTIST:'+artistQuery, null, null, function(success, result) {
-    console.log(getTimestamp() + ': query success: ' + success);
+  player.browse('A:ALBUMARTIST:'+artistQuery, null, null, function(error, result) {
+    console.log(getTimestamp() + ': query success: ' + error);
 
-    if (!success) {
-        console.log('Error searching for artist ' + artistQuery);
+    if (error) {
+        console.log('Error searching for artist ' + artistQuery + ':' + error);
         callback({success: false, text: 'Error searching for artist ' + artistQuery});
     }
     else if (result.items.length == 0) {
@@ -28,20 +28,20 @@ function artist(player, values, callback) {
         var queueURI = "x-rincon-queue:" + player.uuid + "#0";
         
         // clear current queue, so we can fill with songs from artist
-        player.removeAllTracksFromQueue(function (success) {
-            if (!success) {
+        player.removeAllTracksFromQueue(function (error) {
+            if (error) {
                 console.log('Error clearing the queue');
                 callback({success: false, text: 'Error clearing the queue'});
             }
             else {
-                player.addURIToQueue(result.items[0].uri, '', function (success) {
-                    if (!success) {
+                player.addURIToQueue(result.items[0].uri, '', function (error) {
+                    if (error) {
                       console.log("Error: problem loading playlist");
                       callback({success: false, text: 'Error loading playlist'});
                     }
                     else {
                         //need this to tell sonos to use queue (it may be playing from line in, etc)
-                        player.setAVTransportURI(queueURI, "", function (success) {
+                        player.setAVTransportURI(queueURI, "", function (error) {
                             console.log('Playing ' + result.items[0].title);
                             player.coordinator.play();
                             callback({success: true, text: 'Playing music from ' + result.items[0].title });
